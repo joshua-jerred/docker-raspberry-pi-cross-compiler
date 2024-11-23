@@ -9,24 +9,38 @@ BUILD_PATH = $(CURDIR)/$(BUILD_DIR)
 OUTPUT_DIR = "$(BUILD_DIR)/out"
 OUTPUT_PATH = $(CURDIR)/$(OUTPUT_DIR)
 
-COMPILER_NAME = "cross-gcc-$(64_GCC_VERSION)-pi_64"
-COMPILER_TAR_PATH_NO_EXTENSION = "./$(OUTPUT_DIR)/$(COMPILER_NAME)"
+TAR_NAME = "cross-gcc-$(64_GCC_VERSION)-pi_64"
+TAR_PATH_NO_EXTENSION = "./$(OUTPUT_DIR)/$(TAR_NAME)"
+INSTALL_NAME = "cross-pi-gcc-$(64_GCC_VERSION)-64"
 
-build-setup:
+catch-all:
+	@echo "specify a task - see README.md"
+
+install-prerequisites:
+	sudo apt update && sudo apt install -y \
+    gcc g++ gperf flex texinfo gawk gfortran texinfo \
+    bison build-essential openssl unzip wget git pigz libgmp-dev \
+    libncurses-dev autoconf automake tar figlet libmpfr-dev rsync \
+    python3 libmpc-dev git
+
+build-compiler:
 	@mkdir -p $(BUILD_DIR)
 	@mkdir -p $(OUTPUT_DIR)
-
-build-compiler-64: build-setup
+	git pull --recurse-submodules
 	export HOME=$(OUTPUT_PATH) && export BUILDDIR=$(BUILD_PATH) && \
 		bash ./raspberry-pi-cross-compilers/build-scripts/RTBuilder_64b \
 		-g $(64_GCC_VERSION) -o $(64_OS_VERSION)
 
-build-image-64:
+build-image:
 	docker build --progress=plain \
-		--build-arg COMPILER_NAME=$(COMPILER_NAME) \
-		--build-arg COMPILER_TAR_PATH_NO_EXT=$(COMPILER_TAR_PATH_NO_EXTENSION) \
+		--build-arg TAR_NAME=$(TAR_NAME) \
+		--build-arg TAR_PATH_NO_EXTENSION=$(TAR_PATH_NO_EXTENSION) \
+		--build-arg INSTALL_NAME=$(INSTALL_NAME) \
 		-t $(IMAGE_NAME):$(64_TAG) .
-	docker tag $(IMAGE_NAME):$(64_TAG) $(IMAGE_NAME):$(64_TAG)
+# docker tag $(IMAGE_NAME):$(64_TAG) $(IMAGE_NAME):$(64_TAG)
 
-run:
+push-image:
+	docker push $(IMAGE_NAME):$(64_TAG)
+
+run: build-image
 	docker run --rm -it joshuajerred/raspberry-pi-cross-compiler:64-gcc-12.2.0-bookworm /bin/bash
