@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v1
         with:
           submodules: recursive
-      - name: Install Pre-Requisites
-        run: make install-prerequisites
+      # - name: Install Pre-Requisites
+        # run: make install-prerequisites
       - name: Build Compiler
         run: make build-compiler

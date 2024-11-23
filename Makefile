@@ -26,7 +26,6 @@ install-prerequisites:
 build-compiler:
 	@mkdir -p $(BUILD_DIR)
 	@mkdir -p $(OUTPUT_DIR)
-	git pull --recurse-submodules
 	export HOME=$(OUTPUT_PATH) && export BUILDDIR=$(BUILD_PATH) && \
 		bash ./raspberry-pi-cross-compilers/build-scripts/RTBuilder_64b \
 		-g $(64_GCC_VERSION) -o $(64_OS_VERSION)
