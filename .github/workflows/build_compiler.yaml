@@ -13,12 +13,15 @@ on:
       build_compiler:
         description: 'Build the compiler'
         default: true
+        type: boolean
       build_and_push_image:
         description: 'Build the Docker image'
         default: true
+        type: boolean
       release:
         description: 'Release the compiler and Docker image'
         default: false
+        type: boolean
       build_platform:
         description: 'Build platform'
         required: true
