@@ -62,8 +62,9 @@ jobs:
     runs-on: self-hosted
     needs: build_compiler
     if: |
-      always() && ${{ github.event.inputs.build_and_push_image == 'true' }} &&
-      ${{(needs.build_compiler.result == 'success' || needs.build_compiler.result == 'skipped')}}
+      always()
+# && ${{ github.event.inputs.build_and_push_image == 'true' }} 
+# && ${{(needs.build_compiler.result == 'success' || needs.build_compiler.result == 'skipped')}}
     steps:
       - uses: actions/checkout@v4
         with:
