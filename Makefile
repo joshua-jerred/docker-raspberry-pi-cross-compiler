@@ -43,3 +43,9 @@ push-image:
 
 run: build-image
 	docker run --rm -it joshuajerred/raspberry-pi-cross-compiler:64-gcc-12.2.0-bookworm /bin/bash
+
+get-compiler-version:
+	@echo $(64_TAG)
+
+clean:
+	rm -rf $(BUILD_DIR)/
