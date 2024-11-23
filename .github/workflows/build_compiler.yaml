@@ -10,10 +10,6 @@ on:
         type: choice
         options:
           - 'pi-64-gcc-12.2.0-bookworm'
-      build_compiler:
-        description: 'Build the compiler'
-        default: true
-        type: boolean
       build_and_push_image:
         description: 'Build the Docker image'
         default: true
@@ -33,7 +29,6 @@ on:
 
 jobs:
   build_compiler:
-    if: "${{ github.event.inputs.build_compiler == 'true' }}"
     name: Build Compiler
     runs-on: "${{ github.event.inputs.build_platform }}"
     steps:
