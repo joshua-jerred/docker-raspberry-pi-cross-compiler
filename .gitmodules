@@ -1,0 +1,3 @@
+[submodule "raspberry-pi-cross-compilers"]
+	path = raspberry-pi-cross-compilers
+	url = git@github.com:abhiTronix/raspberry-pi-cross-compilers.git
