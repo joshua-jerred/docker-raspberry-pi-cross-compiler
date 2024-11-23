@@ -37,11 +37,11 @@ jobs:
     name: Build Compiler
     runs-on: "${{ github.event.inputs.build_platform }}"
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
       - name: Compiler Build Cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: build
           key: ${{ runner.os }}-build
@@ -65,12 +65,14 @@ jobs:
       always() && ${{ github.event.inputs.build_and_push_image == 'true' }} &&
       (needs.build_compiler.result == 'success' || needs.build_compiler.result == 'skipped')
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
       - uses: actions/download-artifact@v4
         with:
           name: compiler
+      - name: test
+        run: ls -la
       - name: Unpack Compiler
         run: mkdir -p build && mkdir -p build/out && tar -xvf ./compiler/*.tar.gz -C build/out
       - name: Build Docker Image
@@ -86,7 +88,7 @@ jobs:
       - build_compiler
     if: ${{ github.event.inputs.release == 'true' }}
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
       - name: Get Version
         run: echo "::set-output name=version::$(make get-compiler-version)"
         id: version
