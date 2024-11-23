@@ -1,19 +1,20 @@
 FROM debian:bookworm
 
 RUN apt-get update && apt-get install -y \
-gcc g++ gperf flex texinfo gawk gfortran texinfo \
-bison build-essential openssl unzip wget git pigz libgmp-dev \
-libncurses-dev autoconf automake tar figlet libmpfr-dev rsync
+build-essential gawk gcc g++ gfortran git texinfo bison libncurses-dev
 
-RUN mkdir /compiler
+# Grab the compiler tar from the build and extract it
 WORKDIR /compiler
+ARG COMPILER_NAME
+ARG COMPILER_TAR_PATH_NO_EXT
+COPY "${COMPILER_TAR_PATH_NO_EXT}.tar.gz" .
+RUN tar -xvf "${COMPILER_NAME}.tar.gz"
 
-COPY ./raspberry-pi-cross-compilers/build-scripts .
+# Set up the PATH and library path for the compiler
+ENV PATH="/compiler/${COMPILER_NAME}/bin:$PATH"
+# ENV LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/compiler/${COMPILER_NAME}/lib"
+# LD_LIBRARY_PATH is not set in the environment already
+ENV LD_LIBRARY_PATH="/compiler/${COMPILER_NAME}/lib"
 
-ARG gcc_version
-ARG os_version
-
-RUN chmod +x RTBuilder_64b
-RUN ./RTBuilder_64b -g "${gcc_version}" -o "${os_version}"
-
+WORKDIR /workdir
 SHELL ["/bin/bash", "-c"]
