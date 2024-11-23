@@ -19,12 +19,20 @@ on:
       release:
         description: 'Release the compiler and Docker image'
         default: false
+      build_platform:
+        description: 'Build platform'
+        required: true
+        default: 'self-hosted'
+        type: choice
+        options:
+          - 'self-hosted'
+          - 'ubuntu-latest'
 
 jobs:
   build_compiler:
     if: "${{ github.event.inputs.build_compiler == 'true' }}"
     name: Build Compiler
-    runs-on: self-hosted
+    runs-on: "${{ github.event.inputs.build_platform }}"
     steps:
       - uses: actions/checkout@v1
         with:
@@ -37,8 +45,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-build
       - name: Install Pre-Requisites
-        # run: make install-prerequisites
-        run: echo "none."
+        if: ${{ github.event.inputs.build_platform == 'ubuntu-latest' }}
+        run: make install-prerequisites
       - name: Build Compiler
         run: make build-compiler
       - uses: actions/upload-artifact@v4
@@ -69,7 +77,7 @@ jobs:
 
   release:
     name: Create Release
-    runs-on: ubuntu-latest
+    runs-on: "${{ github.event.inputs.build_platform }}"
     needs:
       - build_image
       - build_compiler
