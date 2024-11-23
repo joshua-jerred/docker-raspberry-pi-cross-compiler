@@ -67,8 +67,9 @@ jobs:
 # && ${{(needs.build_compiler.result == 'success' || needs.build_compiler.result == 'skipped')}}
     steps:
       - uses: actions/checkout@v4
-        # with:
-          # submodules: true
+        with:
+          submodules: true
+          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - uses: actions/download-artifact@v4
         with:
           name: compiler
